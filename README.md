@@ -1,2 +1,4 @@
 # InRatingTestApp
-![](name-of-giphy.gif)
+
+
+![](inRating.gif)
