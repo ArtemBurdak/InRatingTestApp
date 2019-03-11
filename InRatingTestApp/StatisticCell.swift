@@ -26,32 +26,6 @@ class StatisticCell: UITableViewCell, UICollectionViewDelegate, UICollectionView
         self.collectionView.dataSource = self
         self.collectionView.reloadData()
         self.manualyCount()
-//        getPersons(postUrl: statistic.postUrl, params: ["id": statistic.postId])
-    }
-
-    func getPersons(postUrl: String?, params: [String : Int?]) {
-
-        guard postUrl != nil, params.first?.value != nil else {return}
-
-            Alamofire.request(postUrl!,
-                              method: .post,
-                              parameters: params as Parameters,
-                              encoding: JSONEncoding.default,
-                              headers: Constants.headers).responseJSON { (response) in
-
-                                guard let data = response.data else { return }
-                                print(response.result.value ?? ":)")
-
-                                let decoder = JSONDecoder()
-                                if let statData = try? decoder.decode(StatisticData.self, from: data) {
-                                    self.statistic.personsArray = statData.data
-
-                                    DispatchQueue.main.async {
-                                        self.manualyCount()
-                                        self.collectionView.reloadData()
-                                    }
-            }
-        }
     }
 
     override func prepareForReuse() {

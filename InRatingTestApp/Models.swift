@@ -40,12 +40,3 @@ struct StatisticTVCell {
 
     var manualyCount: Bool = false
 }
-
-struct MensionsMeta: Codable {
-    var meta: MensionsCount
-}
-
-struct MensionsCount: Codable {
-    let total: Int
-}
-

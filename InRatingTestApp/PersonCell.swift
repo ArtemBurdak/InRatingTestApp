@@ -19,7 +19,6 @@ class PersonCell: UICollectionViewCell {
 
     var person: Person!
 
-
     func configure(person gotPerson: Person) {
         self.person = gotPerson
 
