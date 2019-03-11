@@ -36,6 +36,8 @@ struct StatisticTVCell {
     let postUrl: String?
     let postId: Int?
 
+    var personsArray: [Person]
+
     var manualyCount: Bool = false
 }
 

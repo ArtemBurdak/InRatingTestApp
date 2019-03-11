@@ -16,8 +16,6 @@ class StatisticCell: UITableViewCell, UICollectionViewDelegate, UICollectionView
 
     var statistic: StatisticTVCell!
 
-    var personsArray = [Person]()
-
     func configure(statistic: StatisticTVCell) {
 
         self.statistic = statistic
@@ -26,8 +24,9 @@ class StatisticCell: UITableViewCell, UICollectionViewDelegate, UICollectionView
 
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
-
-        getPersons(postUrl: statistic.postUrl, params: ["id": statistic.postId])
+        self.collectionView.reloadData()
+        self.manualyCount()
+//        getPersons(postUrl: statistic.postUrl, params: ["id": statistic.postId])
     }
 
     func getPersons(postUrl: String?, params: [String : Int?]) {
@@ -45,7 +44,7 @@ class StatisticCell: UITableViewCell, UICollectionViewDelegate, UICollectionView
 
                                 let decoder = JSONDecoder()
                                 if let statData = try? decoder.decode(StatisticData.self, from: data) {
-                                    self.personsArray = statData.data
+                                    self.statistic.personsArray = statData.data
 
                                     DispatchQueue.main.async {
                                         self.manualyCount()
@@ -56,16 +55,16 @@ class StatisticCell: UITableViewCell, UICollectionViewDelegate, UICollectionView
     }
 
     override func prepareForReuse() {
-        personsArray.removeAll()
+        self.statistic.personsArray.removeAll()
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return personsArray.count
+        return self.statistic.personsArray.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PersonCell", for: indexPath) as! PersonCell
-        cell.configure(person: personsArray[indexPath.row])
+        cell.configure(person: self.statistic.personsArray[indexPath.row])
         
         return cell
     }
@@ -86,7 +85,7 @@ class StatisticCell: UITableViewCell, UICollectionViewDelegate, UICollectionView
     
     func manualyCount() {
         if self.statistic.manualyCount {
-            self.statisticType.text = self.statisticType.text! + " \(personsArray.count)"
+            self.statisticType.text = self.statisticType.text! + " \(self.statistic.personsArray.count)"
         }
     }
 

@@ -29,24 +29,28 @@ class StatisticVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         let views = StatisticTVCell.init(title: "Views \(self.post.views_count)",
             postUrl: nil,
             postId: nil,
+            personsArray: [],
             manualyCount: false)
         statistic.append(views)
 
         let likes = StatisticTVCell.init(title: "Likes \(self.post.likes_count)",
             postUrl: Constants.NetworkingUrl.likesUrl,
             postId: self.post.id,
+            personsArray: [],
             manualyCount: false)
         statistic.append(likes)
 
         let comments = StatisticTVCell.init(title: "Comments \(self.post.comments_count)",
             postUrl: Constants.NetworkingUrl.commentsUrl,
             postId: self.post.id,
+            personsArray: [],
             manualyCount: false)
         statistic.append(comments)
 
         let mentions = StatisticTVCell.init(title: "Mentions",
             postUrl: Constants.NetworkingUrl.mentionsUrl,
             postId: self.post.id,
+            personsArray: [],
             manualyCount: true)
 
         statistic.append(mentions)
@@ -54,16 +58,54 @@ class StatisticVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
         let reposts = StatisticTVCell.init(title: "Reposts \(self.post.reposts_count)",
             postUrl: Constants.NetworkingUrl.repostsUrl,
             postId: self.post.id,
+            personsArray: [],
             manualyCount: false)
         statistic.append(reposts)
 
         let bookmarks = StatisticTVCell.init(title: "Bookmarks \(self.post.bookmarks_count)",
             postUrl: nil,
             postId: nil,
+            personsArray: [],
             manualyCount: false)
         statistic.append(bookmarks)
 
-        tableView.reloadData()
+        var countAlam = 0
+        var endCountAlam: Int {
+            var x = 0
+            for i in statistic {
+                if i.postUrl != nil { x += 1 }
+            }
+            return x
+        }
+
+        for (index, item) in statistic.enumerated() {
+
+            if item.postUrl != nil && item.postId != nil {
+                Alamofire.request(item.postUrl!,
+                                  method: .post,
+                                  parameters:  ["id": item.postId!],
+                                  encoding: JSONEncoding.default,
+                                  headers: Constants.headers).responseJSON { (response) in
+
+                                    guard let data = response.data else { return }
+                                    print(response.result.value ?? ":)")
+
+                                    let decoder = JSONDecoder()
+                                    if let statData = try? decoder.decode(StatisticData.self, from: data) {
+                                        self.statistic[index].personsArray = statData.data
+
+                                        countAlam += 1
+
+                                        if countAlam == endCountAlam {
+                                            DispatchQueue.main.async {
+                                                self.activitySpinner.stopAnimating()
+                                                self.tableView.reloadData()
+                                            }
+                                        }
+                                    }
+                }
+            }
+        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -81,10 +123,7 @@ class StatisticVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var height = 150
 
-//        if statistic[indexPath.row].empty == true {
-//            height = 50
-//        }
-        if statistic[indexPath.row].postUrl == nil {
+        if statistic[indexPath.row].personsArray.isEmpty {
             height = 50
         }
         return CGFloat(height)
@@ -103,8 +142,6 @@ class StatisticVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
             let decoder = JSONDecoder()
             if let post = try? decoder.decode(Post.self, from: data) {
                 self.post = post
-
-                self.activitySpinner.stopAnimating()
 
                 self.setupStatistic()
             }
