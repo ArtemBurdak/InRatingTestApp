@@ -85,21 +85,21 @@ class StatisticVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
                                   method: .post,
                                   parameters:  ["id": item.postId!],
                                   encoding: JSONEncoding.default,
-                                  headers: Constants.headers).responseJSON { (response) in
+                                  headers: Constants.headers).responseJSON { [weak self] (response) in
 
                                     guard let data = response.data else { return }
                                     print(response.result.value ?? ":)")
 
                                     let decoder = JSONDecoder()
                                     if let statData = try? decoder.decode(StatisticData.self, from: data) {
-                                        self.statistic[index].personsArray = statData.data
+                                        self?.statistic[index].personsArray = statData.data
 
                                         countAlam += 1
 
                                         if countAlam == endCountAlam {
                                             DispatchQueue.main.async {
-                                                self.activitySpinner.stopAnimating()
-                                                self.tableView.reloadData()
+                                                self?.activitySpinner.stopAnimating()
+                                                self?.tableView.reloadData()
                                             }
                                         }
                                     }
