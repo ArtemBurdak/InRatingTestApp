@@ -95,7 +95,7 @@ class StatisticVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
                                         self?.statistic[index].personsArray = statData.data
 
                                         countAlam += 1
-
+ 
                                         if countAlam == endCountAlam {
                                             DispatchQueue.main.async {
                                                 self?.activitySpinner.stopAnimating()
