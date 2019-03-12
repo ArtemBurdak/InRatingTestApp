@@ -1,0 +1,4 @@
+# InRatingTestApp
+
+
+![](inRating.gif)
