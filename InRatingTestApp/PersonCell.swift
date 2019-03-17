@@ -6,8 +6,6 @@
 //  Copyright © 2019 Artem. All rights reserved.
 //
 
-import Foundation
-
 import UIKit
 import Kingfisher
 
@@ -17,14 +15,17 @@ class PersonCell: UICollectionViewCell {
 
     @IBOutlet weak var personNamelbl: UILabel!
 
-    var person: Person!
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.avatar.image = nil
+        self.personNamelbl.text = nil
+    }
 
-    func configure(person gotPerson: Person) {
-        self.person = gotPerson
+    func configure(person model: Person) {
 
-        let imageUrl = URL(string: self.person.avatar_image.url_small)
+        let imageUrl = URL(string: model.avatar_image.url_small)
         avatar.kf.setImage(with: imageUrl)
 
-        personNamelbl.text = self.person.nickname
+        personNamelbl.text = model.nickname
     }
 }

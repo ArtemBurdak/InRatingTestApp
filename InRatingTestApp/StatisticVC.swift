@@ -40,7 +40,7 @@ class StatisticVC: UIViewController, UITableViewDelegate, UITableViewDataSource 
             manualyCount: false)
         statistic.append(likes)
 
-        let comments = StatisticTVCell.init(title: "Comments \(self.post.comments_count)",
+        let comments = StatisticTVCell(title: "Comments \(self.post.comments_count)",
             postUrl: Constants.NetworkingUrl.commentsUrl,
             postId: self.post.id,
             personsArray: [],
